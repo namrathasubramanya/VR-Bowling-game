@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VR Bowling</title>
+    <meta name="description" content="VR Bowling">
+    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v3.2.0/dist/aframe-physics-system.min.js"></script>
+    <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script>
+    <script src="https://unpkg.com/super-hands@2.1.0/dist/super-hands.min.js"></script>
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.21.2.js"></script>
+    <script>
+      var pubnub = new PubNub({
+        subscribeKey: "sub-c-a1ad7926-5e0a-11e8-8ebf-f686a6d93a6b",
+        publishKey: "pub-c-563cbabc-a399-4a76-830a-468a698efd4d"
+      });
+      var strike = 0;
+      var delivery = 0;
+      var dynamics = true;
+      AFRAME.registerComponent("refresh", {
+        init: function() {
+          this.el.addEventListener('click', function (evt) {
+            window.location.reload();
+            pubnub.publish({
+                  message: {'key' : 'refresh'},
+                  channel: 'VR'
+            });
+          });
+        }
+      })
+      
+      function farLeft() {
+          const slide = document.createElement('a-animation');
+          slide.setAttribute('id', 'animate');
+          slide.setAttribute('to', '-0.8 1.325 -9.55');
+          slide.setAttribute('from', '-0.8 1.325 3');
+          slide.setAttribute('attribute', 'position');
+          slide.setAttribute('dur', '3000');
+          document.querySelector('#green').appendChild(slide);
+      }
+      
+      function center() {
+        const slide = document.createElement('a-animation');
+        slide.setAttribute('id', 'animate');
+        slide.setAttribute('to', '0 1.325 -9.55');
+        slide.setAttribute('from', 'this.object3D.position.x 1.325 3');
+        slide.setAttribute('attribute', 'position');
+        slide.setAttribute('dur', '3000');
+        document.querySelector('#green').appendChild(slide);
+      }
+      
+      AFRAME.registerComponent("far-left", {
+        init: function() {
+          this.el.addEventListener('click', function (evt) {
+               //dynamics = true;
+               dynamicBody();
+               delivery++;
+               checkDelivery();
+               farLeft();
+                pubnub.publish({
+                  message: {'key' : 'far-left'},
+                  channel: 'VR'
+                });
+                setTimeout(pins, 2775);
+          });
+        }
+      })
+      
+      function left() {
+         const slide = document.createElement('a-animation');
+          slide.setAttribute('id', 'animate');
+          slide.setAttribute('to', '-0.4 1.325 -9.55');
+          slide.setAttribute('from', '-0.4 1.325 3');
+          slide.setAttribute('attribute', 'position');
+          slide.setAttribute('dur', '3000');
+          document.querySelector('#green').appendChild(slide);
+      }
+      AFRAME.registerComponent("left", {
+        init: function() {
+          this.el.addEventListener('click', function (evt) {
+               //dynamics = true;
+               dynamicBody();
+               delivery++;
+               checkDelivery();
+               left();
+               pubnub.publish({
+                  message: {'key' : 'left'},
+                  channel: 'VR'
+                });
+               setTimeout(pins, 2775);
+          });
+        }
+      })
+      
+      function right() {
+         const slide = document.createElement('a-animation');
+          slide.setAttribute('id', 'animate');
+          slide.setAttribute('to', '0.4 1.325 -9.55');
+          slide.setAttribute('from', '0.4 1.325 3');
+          slide.setAttribute('attribute', 'position');
+          slide.setAttribute('dur', '3000');
+          document.querySelector('#green').appendChild(slide);
+      }
+      
+      AFRAME.registerComponent("right", {
+        init: function() {
+          this.el.addEventListener('click', function (evt) {
+               //dynamics = true;
+               dynamicBody();
+               delivery++;
+               checkDelivery();
+               right();
+                pubnub.publish({
+                  message: {'key' : 'right'},
+                  channel: 'VR'
+                });
+                setTimeout(pins, 2775);
+          });
+        }
+      })
+      
+      function farRight(){
+        const slide = document.createElement('a-animation');
+        slide.setAttribute('id', 'animate');
+        slide.setAttribute('to', '0.8 1.325 -9.55');
+        slide.setAttribute('from', '0.8 1.325 3');
+        slide.setAttribute('attribute', 'position');
+        slide.setAttribute('dur', '3000');
+        document.querySelector('#green').appendChild(slide);
+      }
+      
+      AFRAME.registerComponent("far-right", {
+        init: function() {
+          this.el.addEventListener('click', function (evt) {
+               //dynamics = true;
+               dynamicBody();
+               delivery++;
+                checkDelivery();
+                farRight();
+                pubnub.publish({
+                  message: {'key' : 'far-right'},
+                  channel: 'VR'
+                });
+                setTimeout(pins, 2775);
+          });
+        }
+      })
+      
+      AFRAME.registerComponent("center", {  
+        init: function() {
+          this.el.addEventListener('click', function (evt) {
+               //console.log("dynamics  "+dynamics);
+               //dynamics = true;
+               dynamicBody();
+               delivery++;
+               console.log("**delivery**"+delivery);
+               checkDelivery();
+                center();
+                pubnub.publish({
+                  message: {'key' : 'center'},
+                  channel: 'VR'
+                });
+                setTimeout(pins, 2775);
+           });
+        }
+      })
+     
+      function checkDelivery() {
+        if(delivery == 2){
+             //dynamics = false;
+             delivery = 0;
+             const leftTriangle = document.querySelector('#left');
+             leftTriangle.setAttribute('position','0 0 0');
+             const rightTriangle = document.querySelector('#right');
+             rightTriangle.setAttribute('position','0 0 0');
+             const centerTriangle = document.querySelector('#center');
+             centerTriangle.setAttribute('position','0 0 0');
+             const farLeftTriangle = document.querySelector('#far-left');
+             farLeftTriangle.setAttribute('position','0 0 0');
+             const farRightTriangle = document.querySelector('#far-right');
+             farRightTriangle.setAttribute('position','0 0 0');
+               pubnub.publish({
+                      message: {'key' : 'your-turn'},
+                      channel: 'VR'
+                });
+        }
+      }
+      
+      function pins() {
+            var down = [];
+            var fall = []; var j = 0;
+            down[0] = document.querySelector("#one").getAttribute('rotation').x;
+            down[1] = document.querySelector("#two").getAttribute('rotation').x;
+            down[2] = document.querySelector("#three").getAttribute('rotation').x;
+            down[3] = document.querySelector("#four").getAttribute('rotation').x;
+            down[4] = document.querySelector("#five").getAttribute('rotation').x;
+            down[5] = document.querySelector("#six").getAttribute('rotation').x;
+            down[6] = document.querySelector("#seven").getAttribute('rotation').x;
+            down[7] = document.querySelector("#eight").getAttribute('rotation').x;
+            down[8] = document.querySelector("#nine").getAttribute('rotation').x;
+            down[9] = document.querySelector("#ten").getAttribute('rotation').x;
+            for(var i = 0; i < 10; i++) {
+               if(Math.trunc(down[i]) != 0 || -0){
+                  strike++;
+                  if(i == 0) {
+                    pubnub.publish({
+                      message: {
+                        'key' : 'pins',
+                        'pin' : 1,
+                        'rotation' : document.querySelector("#one").getAttribute('rotation'),
+                        'position' : document.querySelector("#one").getAttribute('position')
+                      },
+                      channel: 'VR'
+                    });
+      
+                  }
+                 if(i == 1) {
+                     pubnub.publish({
+                      message: {
+                        'key' : 'pins',
+                        'pin' : 2,
+                        'rotation' : document.querySelector("#two").getAttribute('rotation'),
+                        'position' : document.querySelector("#two").getAttribute('position')
+                      },
+                      channel: 'VR'
+                    });
+                  }
+                 if(i == 2) {
+                     pubnub.publish({
+                      message: {
+                        'key' : 'pins',
+                        'pin' : 3,
+                        'rotation' : document.querySelector("#three").getAttribute('rotation'),
+                        'position' : document.querySelector("#three").getAttribute('position')
+                      },
+                      channel: 'VR'
+                    });
+                  }
+                 if(i == 3) {
+                     pubnub.publish({
+                      message: {
+                        'key' : 'pins',
+                        'pin' : 4,
+                        'rotation' : document.querySelector("#four").getAttribute('rotation'),
+                        'position' : document.querySelector("#four").getAttribute('position')
+                      },
+                      channel: 'VR'
+                    });
+                  }
+                 if(i == 4) {
+                     pubnub.publish({
+                      message: {
+                        'key' : 'pins',
+                        'pin' : 5,
+                        'rotation' : document.querySelector("#five").getAttribute('rotation'),
+                        'position' : document.querySelector("#five").getAttribute('position')
+                      },
+                      channel: 'VR'
+                    });
+                  }
+                 if(i == 5) {
+                     pubnub.publish({
+                      message: {
+                        'key' : 'pins',
+                        'pin' : 6,
+                        'rotation' : document.querySelector("#six").getAttribute('rotation'),
+                        'position' : document.querySelector("#six").getAttribute('position')
+                      },
+                      channel: 'VR'
+                    });
+                  }
+                 if(i == 6) {
+                     pubnub.publish({
+                      message: {
+                        'key' : 'pins',
+                        'pin' : 7,
+                        'rotation' : document.querySelector("#seven").getAttribute('rotation'),
+                        'position' : document.querySelector("#seven").getAttribute('position')
+                      },
+                      channel: 'VR'
+                    });
+                  }
+                 if(i == 7) {
+                     pubnub.publish({
+                      message: {
+                        'key' : 'pins',
+                        'pin' : 8,
+                        'rotation' : document.querySelector("#eight").getAttribute('rotation'),
+                        'position' : document.querySelector("#eight").getAttribute('position')
+                      },
+                      channel: 'VR'
+                    });
+                  }
+                 if(i == 8) {
+                     pubnub.publish({
+                      message: {
+                        'key' : 'pins',
+                        'pin' : 9,
+                        'rotation' : document.querySelector("#nine").getAttribute('rotation'),
+                        'position' : document.querySelector("#nine").getAttribute('position')
+                      },
+                      channel: 'VR'
+                    });
+                  }
+                 if(i == 9) {
+                     pubnub.publish({
+                      message: {
+                        'key' : 'pins',
+                        'pin' : 10,
+                        'rotation' : document.querySelector("#ten").getAttribute('rotation'),
+                        'position' : document.querySelector("#ten").getAttribute('position')
+                      },
+                      channel: 'VR'
+                    });
+                  }
+               }
+            }
+      }
+      
+      AFRAME.registerComponent('track-position', {
+        tick: function (time, timeDelta) {
+          var currentPosition = this.el.object3D.position;
+          if(dynamics == true) {
+            this.el.components['dynamic-body'].syncToPhysics();  
+          }
+        }
+      });
+           
+      AFRAME.registerComponent("start-line", {
+        init: function() {
+          this.el.addEventListener('click', function (evt) {
+               var camPos = document.querySelector("#wrapper");
+               var position = camPos.getAttribute("position");
+               camPos.setAttribute("position",'0 3 6'); 
+              //console.log("Start line Clicked");
+          });
+        }
+      })
+      
+      AFRAME.registerComponent('move-rig', {
+        init: function () {
+          document.querySelector("#center").addEventListener('click', this.moveRig.bind(this));
+          document.querySelector("#left").addEventListener('click', this.moveRig.bind(this));
+          document.querySelector("#far-left").addEventListener('click', this.moveRig.bind(this));
+          document.querySelector("#right").addEventListener('click', this.moveRig.bind(this));
+          document.querySelector("#far-right").addEventListener('click', this.moveRig.bind(this));
+        },
+        moveRig: function () {
+           var camPos = document.querySelector("#wrapper");
+           var position = camPos.getAttribute("position");
+           camPos.setAttribute("position",'0 2 6');  
+        }
+      });
+      
+      function removeDynamicBody() {
+          dynamics = false;
+          document.getElementById("green").removeAttribute('dynamic-body');
+          document.getElementById("one").removeAttribute('dynamic-body');
+          document.getElementById("two").removeAttribute('dynamic-body');
+          document.getElementById("three").removeAttribute('dynamic-body');
+          document.getElementById("four").removeAttribute('dynamic-body');
+          document.getElementById("five").removeAttribute('dynamic-body');
+          document.getElementById("six").removeAttribute('dynamic-body');
+          document.getElementById("seven").removeAttribute('dynamic-body');
+          document.getElementById("eight").removeAttribute('dynamic-body');
+          document.getElementById("nine").removeAttribute('dynamic-body');
+          document.getElementById("ten").removeAttribute('dynamic-body');
+      }
+      
+      function dynamicBody() {
+          dynamics = true;
+          document.getElementById("green").setAttribute('dynamic-body','mass:17.5');
+          document.getElementById("one").setAttribute('dynamic-body','mass:1.25');
+          document.getElementById("two").setAttribute('dynamic-body','mass:1.25');
+          document.getElementById("three").setAttribute('dynamic-body','mass:1.25');
+          document.getElementById("four").setAttribute('dynamic-body','mass:1.25');
+          document.getElementById("five").setAttribute('dynamic-body','mass:1.25');
+          document.getElementById("six").setAttribute('dynamic-body','mass:1.25');
+          document.getElementById("seven").setAttribute('dynamic-body','mass:1.25');
+          document.getElementById("eight").setAttribute('dynamic-body','mass:1.25');
+          document.getElementById("nine").setAttribute('dynamic-body','mass:1.25');
+          document.getElementById("ten").setAttribute('dynamic-body','mass:1.25');
+      }
+      
+      pubnub.addListener({
+        message: function(message){
+           if(message.message.key == 'player1-turn') {
+             delivery = 0;
+             //dynamics = false;
+             const leftTriangle = document.querySelector('#left');
+             leftTriangle.setAttribute('position','0.5 1.02  1');
+             const rightTriangle = document.querySelector('#right');
+             rightTriangle.setAttribute('position','-0.5 1.02 1');
+             const centerTriangle = document.querySelector('#center');
+             centerTriangle.setAttribute('position','0 1.02 1 ');
+             const farLeftTriangle = document.querySelector('#far-left');
+             farLeftTriangle.setAttribute('position','1 1.02  1');
+             const farRightTriangle = document.querySelector('#far-right');
+             farRightTriangle.setAttribute('position','-1 1.02 1');
+          }
+          if(message.message.key == 'center') {
+            //dynamics = false;
+            removeDynamicBody();
+            center();
+          }
+          else if(message.message.key == 'far-left') {
+            //dynamics = false;
+            removeDynamicBody();
+            farLeft();
+          }
+          else if(message.message.key == 'left') {
+           // dynamics = false;
+            removeDynamicBody();
+            left();
+          }
+          else if(message.message.key == 'far-right') {
+           //dynamics = false;
+            removeDynamicBody();
+           farRight();
+          }
+          else if(message.message.key == 'right') {
+            //dynamics = false;
+            removeDynamicBody();
+            right();
+          }
+           if(message.message.key == 'pins') {
+            if(message.message.pin == 1){
+                document.querySelector("#one").setAttribute('rotation', message.message.rotation);
+              document.querySelector("#one").setAttribute('position', message.message.position);
+            }
+            if(message.message.pin == 2){
+                document.querySelector("#two").setAttribute('rotation', message.message.rotation);
+              document.querySelector("#two").setAttribute('position', message.message.position);
+            }
+            if(message.message.pin == 3){
+                document.querySelector("#three").setAttribute('rotation', message.message.rotation);
+              document.querySelector("#three").setAttribute('position', message.message.position);
+            }
+            if(message.message.pin == 4){
+                document.querySelector("#four").setAttribute('rotation', message.message.rotation);
+              document.querySelector("#four").setAttribute('position', message.message.position);
+            }
+            if(message.message.pin == 5){
+                document.querySelector("#five").setAttribute('rotation', message.message.rotation);
+              document.querySelector("#five").setAttribute('position', message.message.position);
+            }
+            if(message.message.pin == 6){
+                document.querySelector("#six").setAttribute('rotation', message.message.rotation);
+              document.querySelector("#six").setAttribute('position', message.message.position);
+            }
+            if(message.message.pin == 7){
+              document.querySelector("#seven").setAttribute('rotation', message.message.rotation);
+              document.querySelector("#seven").setAttribute('position', message.message.position);
+            }
+            if(message.message.pin == 8){
+                document.querySelector("#eight").setAttribute('rotation', message.message.rotation);
+              document.querySelector("#eight").setAttribute('position', message.message.position);
+            }
+            if(message.message.pin == 9){
+                document.querySelector("#nine").setAttribute('rotation', message.message.rotation);
+              document.querySelector("#nine").setAttribute('position', message.message.position);
+            }
+            if(message.message.pin == 10){
+                document.querySelector("#ten").setAttribute('rotation', message.message.rotation);
+              document.querySelector("#ten").setAttribute('position', message.message.position);
+            }
+          }
+        }
+      });
+      
+      pubnub.subscribe({
+        channels: ['VR1']
+      });
+      
+    </script>
+  </head>
+  
+  <body>
+	<a-scene background="color: #FFFFFF" physics="friction: 0.001; restitution: 0.3; iterations: 30;" >
+    <a-assets>
+        <img id="floor" src="https://cdn.glitch.com/a385d449-4e52-40a5-b469-63598fd25f17%2Ffloor-1024.jpg?1532125960968">
+    </a-assets>
+    
+    <a-entity id="wrapper" position="0 3 6" move-rig>
+        <a-entity id="camera" camera wasd-controls look-controls mouse-cursor>
+          <a-cursor id="cursor" fuse="true"></a-cursor>
+        </a-entity>
+    </a-entity>
+    
+		<!-- Ground -->
+		<a-plane src="#floor" rotation="-90 0 0" scale="10000 10000 1" repeat="1000 1000" static-body></a-plane>
+		
+		<!-- Green Sphere | Grab And Throw -->
+    <a-sphere id="green" color="#00AA00" position="0 1.325 3.4" radius="0.35" grabbable dynamic-body="mass: 17.5" track-position>
+    <!-- <a-animation begin="click" attribute="position" from="0 1.325 3" to="0.43 1.325 -9.55" dur="2700" fill="both"></a-animation> -->
+    </a-sphere>
+    
+    <!-- Wall -->
+    <a-box position="0 4 -11" scale="24 8 1" color="#0099cc" static-body="mass:15"></a-box>
+    
+    <!-- Refresh -->
+    <a-box id="refresh" position="0 7 -10.9" scale="4 1 1" color="#ccc" static-body="mass:1" refresh></a-box>
+    <a-text position="-1.6 7 -10.3" value="NEW GAME" color="black" wrap-count="15"></a-text>
+    
+    <!-- Bowling Lane -->
+    <a-box position="0 0.48 -2.49" color="#ffff00" width="4" height="14" rotation="90 0 0" static-body></a-box>
+    <a-box position="0 0.98 4" scale="4 0.01 1" color="#93620a" rotation="0 0 0" static-body start-line></a-box>
+    <a-text position="-1.2 1 4.3" rotation="-90 0 0" value="Click here to re-position your camera" color="#fff" wrap-count="65"></a-text>
+    
+    <a-triangle id="center" color="#ccc" position="0 1.02 1" rotation="-90 0 0" vertex-a="0 0.225 0" vertex-b="-0.225 -0.225 0" vertex-c="0.225 -0.225 0"  static-body="mass:15" center></a-triangle>
+    <a-triangle id="far-left" color="#CCC" position="1 1.02  1" rotation="-90 0 0" vertex-a="0 0.225 0" vertex-b="-0.225 -0.225 0" vertex-c="0.225 -0.225 0" static-body="mass:15" far-right></a-triangle>
+    <a-triangle id="far-right" color="#CCC" position="-1 1.02 1" rotation="-90 0 0" vertex-a="0 0.225 0" vertex-b="-0.225 -0.225 0" vertex-c="0.225 -0.225 0" static-body="mass:15" far-left></a-triangle>
+    <a-triangle id="left" color="#CCC" position="0.5 1.02  1" rotation="-90 0 0" vertex-a="0 0.225 0" vertex-b="-0.225 -0.225 0" vertex-c="0.225 -0.225 0" static-body="mass:15" right></a-triangle>
+    <a-triangle id="right" color="#CCC" position="-0.5 1.02 1" rotation="-90 0 0" vertex-a="0 0.225 0" vertex-b="-0.225 -0.225 0" vertex-c="0.225 -0.225 0" static-body="mass:15" left></a-triangle>
+    
+    <!-- Borders -->
+    <a-box position="-3.3 0.48 -3.49" color="#666666" width="0.4" height="16" rotation="90 0 0" static-body></a-box>
+    <a-box position="3.3 0.48 -3.49" color="#666666" width="0.4" height="16" rotation="90 0 0" static-body></a-box>
+    
+    <!-- Bowling pins -->
+    <a-cylinder id="one" radius="0.1" height="0.6" position="0 1.27 -4.5" color="#ccc" dynamic-body="mass: 1.25"></a-cylinder>
+    <a-cylinder id="two" radius="0.1" height="0.6" position="-0.3 1.27 -6" color="#ccc" dynamic-body="mass: 1.25"></a-cylinder>
+    <a-cylinder id="three" radius="0.1" height="0.6" position="0.3 1.27 -5" color="#ccc" dynamic-body="mass: 1.25"></a-cylinder>
+    <a-cylinder id="four" radius="0.1" height="0.6" position="0 1.27 -5.5" color="#ccc" dynamic-body="mass: 1.25"></a-cylinder>
+    <a-cylinder id="five" radius="0.1" height="0.6" position="-0.5 1.27 -5.5" color="#ccc" dynamic-body="mass: 1.25"></a-cylinder>
+    <a-cylinder id="six" radius="0.1" height="0.6" position="0.5 1.27 -5.5" color="#ccc" dynamic-body="mass: 1.25"></a-cylinder>
+    <a-cylinder id="seven" radius="0.1" height="0.6" position="-0.3 1.27 -5" color="#ccc" dynamic-body="mass: 1.25"></a-cylinder>
+    <a-cylinder id="eight" radius="0.1" height="0.6" position="0.3 1.27 -6" color="#ccc" dynamic-body="mass: 1.25"></a-cylinder>
+    <a-cylinder id="nine" radius="0.1" height="0.6" position="-0.85 1.27 -6" color="#ccc" dynamic-body="mass: 1.25"></a-cylinder>
+    <a-cylinder id="ten" radius="0.1" height="0.6" position="0.85 1.27 -6" color="#ccc" dynamic-body="mass: 1.25"></a-cylinder>
+	</a-scene>
+</body>
+</html>
