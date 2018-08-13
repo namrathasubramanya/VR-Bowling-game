@@ -1,3 +1,3 @@
 # VR-Bowling-game
 
-![Github](https://gist.github.com/ajb413/0f5b65578991adb4578a8f5160289323)
+![stack Overflow](http://lmsotfy.com/so.png)
