@@ -10,12 +10,12 @@ Click the image below to watch the game video:
 
 ## PubNub
 
-You can signup for PubNub by clicking on these links:
-
+You can signup for PubNub by clicking on this link:
 <a href="https://dashboard.pubnub.com/signup?devrel_gh=namrathasubramanya">
     <img alt="PubNub Signup" src="https://i.imgur.com/og5DDjf.png" width=260 height=97/>
 </a>
 <br/>
+You can find the tutorial for building the game here:
 <a href="https://www.pubnub.com/blog/build-multiplayer-browser-based-vr-game-aframe-webvr/?devrel_gh=namrathasubramanya">
     <img alt="PubNub Blog" src="https://i.imgur.com/aJ927CO.png" width=260 height=98/>
 </a>
