@@ -1,4 +1,4 @@
-# VR-Bowling-game
+# Build a Multiplayer Browser-based VR Game with A-Frame, PubNub, and WebVR
 
 ## Introduction
 
