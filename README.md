@@ -10,6 +10,6 @@ Recent advancements in technology have made Virtual Reality(VR) more immersive a
     <img alt="PubNub Signup" src="https://i.imgur.com/og5DDjf.png" width=260 height=97/>
 </a>
 <br/>
-<a href="https://www.pubnub.com/blog/build-a-voice-controlled-app-with-example-javascript-code/?devrel_gh=namrathasubramanya">
+<a href="https://www.pubnub.com/blog/build-multiplayer-browser-based-vr-game-aframe-webvr/?devrel_gh=namrathasubramanya">
     <img alt="PubNub Blog" src="https://i.imgur.com/aJ927CO.png" width=260 height=98/>
 </a>
