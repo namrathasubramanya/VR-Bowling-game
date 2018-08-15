@@ -6,6 +6,8 @@ Recent advancements in technology have made Virtual Reality(VR) more immersive a
 
 ## PubNub
 
+You can signup for PubNub by clicking on these links:
+
 <a href="https://dashboard.pubnub.com/signup?devrel_gh=namrathasubramanya">
     <img alt="PubNub Signup" src="https://i.imgur.com/og5DDjf.png" width=260 height=97/>
 </a>
